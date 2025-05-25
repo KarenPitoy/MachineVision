@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Vision - Image Processing</title>
+    <link rel="stylesheet" href="style.css">
+    <script async src="https://docs.opencv.org/3.4/opencv.js" onload="onOpenCVReady();" onerror="onOpenCVError();"></script>
+</head>
+<body>
+<div class="header">
+    <span class="machine-vision-label">Machine Vision</span> <div class="dropdown">
+    <button class="dropbtn">Filter</button>
+    <div class="dropdown-content">
+        <a href="#" onclick="applyFilter('grayscale')">Grayscale</a>
+        <a href="#" onclick="applyFilter('bw')">Black & White</a>
+        <div class="sub-dropdown">
+            <a href="#">Filters ▸</a>
+            <div class="sub-dropdown-content">
+                <a href="#" onclick="applyFilter('sepia')">Sepia</a>
+                <a href="#" onclick="applyFilter('vintage')">Vintage</a>
+                <a href="#" onclick="applyFilter('pastel')">Pastel</a>
+                <a href="#" onclick="applyFilter('duotone')">Duotone</a>
+                <a href="#" onclick="applyFilter('solarize')">Solarize</a>
+                <a href="#" onclick="applyFilter('cyanotype')">Cyanotype</a>
+                <a href="#" onclick="applyFilter('gradient')">Gradient</a>
+                <a href="#" onclick="applyFilter('vivid')">Vivid</a>
+                <a href="#" onclick="applyFilter('negative')">Negative</a>
+                <a href="#" onclick="applyFilter('polaroid')">Polaroid</a> </div>
+        </div>
+    </div>
+</div>
+
+    <div id="geometric-property-display" class="geometric-property-display">
+    </div>
+
+<div class="dropdown">
+        <button class="dropbtn">Geometric Properties</button>
+        <div class="dropdown-content">
+            <a href="#" id="area-image" data-property="Area of Image" onmouseover="showTooltip(event, 'Area of Image', 'area-image')" onmouseout="hideTooltip()" onclick="handleDropdownClick('Area of Image', 'area-image')">Area of the image</a>
+            <a href="#" id="area-object" data-property="Area of Object" onmouseover="showTooltip(event, 'Area of Object', 'area-object')" onmouseout="hideTooltip()" onclick="handleDropdownClick('Area of Object', 'area-object')">Area of the object</a>
+            <a href="#" id="centroid-image" data-property="Centroid of the Image" onmouseover="showTooltip(event, 'Centroid of the Image', 'centroid-image')" onmouseout="hideTooltip()" onclick="handleDropdownClick('Centroid of the Image', 'centroid-image')">Centroid of the image</a>
+            <a href="#" id="centroid-object" data-property="Centroid of the Object" onmouseover="showTooltip(event, 'Centroid of the Object', 'centroid-object')" onmouseout="hideTooltip()" onclick="handleDropdownClick('Centroid of the Object', 'centroid-object')">Centroid of the object</a>
+            <a href="#" id="coords-image" data-property="X and Y of the Image" onmouseover="showTooltip(event, 'X and Y of the Image', 'coords-image')" onmouseout="hideTooltip()" onclick="handleDropdownClick('X and Y of the Image', 'coords-image')">X and Y of the image</a>
+            <a href="#" id="coords-object" data-property="X and Y of the Object" onmouseover="showTooltip(event, 'X and Y of the Object', 'coords-object')" onmouseout="hideTooltip()" onclick="handleDropdownClick('X and Y of the Object', 'coords-object')">X and Y of the object</a>
+        </div>
+    </div>
+
+<div id="tooltip" class="tooltip"></div>
+
+<div class="dropdown">
+    <button class="dropbtn">Image Orientation</button>
+    <div class="dropdown-content">
+        <div class="sub-dropdown">
+            <a href="#">Rotation</a>
+            <div class="sub-dropdown-content">
+               <a href="#" onclick="rotateImageAuto(90)">90° Clockwise</a>
+                <a href="#" onclick="rotateImageAuto(-90)">90° Counterclockwise</a>
+                <a href="#" onclick="rotateImageAuto(180)">180°</a>
+
+            </div>
+        </div>
+        <a href="#" onclick="mirrorImage()">Mirror</a>
+        <a href="#" onclick="translateImage()">Translation</a>
+        <a href="#" onclick="displayHistogram()">Image Histogram</a>
+        <div class="sub-dropdown">
+            <a href="#">Binary Projection ▸</a>
+            <div class="sub-dropdown-content">
+                 <a href="#" onclick="binaryProjection('vertical')">Vertical</a>
+                 <a href="#" onclick="binaryProjection('horizontal')">Horizontal</a>
+            </div>
+        </div>
+    </div>
+</div>
+<button id = "upload-btn" onclick="openSignLanguageTab()">Sign Language Translator</button>
+</div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="centered-label">RGB Toggle Bar</div>
+            <div class="rgb-sliders">
+                <div class="slider-container">
+                    <input type="range" id="red-slider" min="0" max="255" value="0" orient="vertical">
+                    <label>R: <span id="red-value">0</span></label>
+                </div>
+                <div class="slider-container">
+                    <input type="range" id="green-slider" min="0" max="255" value="0" orient="vertical">
+                    <label>G: <span id="green-value">0</span></label>
+                </div>
+                <div class="slider-container">
+                    <input type="range" id="blue-slider" min="0" max="255" value="0" orient="vertical">
+                    <label>B: <span id="blue-value">0</span></label>
+                </div>
+            </div>
+            <div class="centered-label">Image Enhancer</div>
+        <div class="adjustment-sliders">
+            <div class="slider-row">
+                <input type="range" id="opacity-slider" min="0" max="200" value="100">
+                <label>Opacity: <span id="opacity-value">100</span></label>
+            </div>
+
+            <div class="slider-row">
+                <input type="range" id="brightness-slider" min="0" max="200" value="100">
+                <label>Brightness: <span id="brightness-value">100</span></label>
+            </div>
+
+            <div class="slider-row">
+                <input type="range" id="contrast-slider" min="0" max="200" value="100">
+                <label>Contrast: <span id="contrast-value">100</span></label>
+            </div>
+
+            <div class="slider-row">
+                <input type="range" id="saturation-slider" min="0" max="200" value="100">
+                <label>Saturation: <span id="saturation-value">100</span></label>
+            </div>
+
+            <div class="slider-row">
+                <input type="range" id="blur-slider" min="0" max="100" step="0.1" value="0">
+                <label>Blur: <span id="blur-value">0</span></label>
+            </div>
+        </div>
+
+
+ <div class="spacer"></div>
+  <div class="spacer"></div>
+   <div class="spacer"></div>
+<div class="centered-label">Image Convolution</div>
+<div class="switch-container">
+    <div class="row">
+        <label class="convolution-switch">
+            <input type="checkbox" id="Smoothing">
+            <span class="convolution"></span>
+            Smoothing
+        </label>
+
+        <label class="convolution-switch">
+            <input type="checkbox" id="Sharpen">
+            <span class="convolution"></span>
+            Sharpen
+        </label>
+    </div>
+
+    <div class="row">
+        <label class="convolution-switch">
+            <input type="checkbox" id="Mean">
+            <span class="convolution"></span>
+            Mean Removal
+        </label>
+
+        <label class="convolution-switch">
+            <input type="checkbox" id="Emboss">
+            <span class="convolution"></span>
+            Emboss
+        </label>
+    </div>
+
+    <div class="row">
+        <label class="convolution-switch">
+            <input type="checkbox" id="Blurt">
+            <span class="convolution"></span>
+            Gaussian Blur
+        </label>
+        <label class="convolution-switch">
+            <input type="checkbox" id="Sobel">
+            <span class="convolution"></span>
+            Sobel Edge
+        </label>
+    </div>
+</div>
+
+        </div>
+<div class="right-panel">
+        <div class="centered-label">Adaptive Binarization / Segmentation</div>
+        <label class="switch adaptive-toggle">
+            <input type="checkbox" id="binarization-toggle">
+            <span class="slider"></span>
+        </label>
+            <div class="centered-label">Thresholding</div>
+                <div class="threshold-sliders">
+                    <div class="slider-container">
+                        <input type="range" id="threshold-avg-slider" min="0" max="255" value="128" orient="vertical">
+                        <label>Avg: <span id="threshold-avg-value">128</span></label>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="threshold-t1-slider" min="0" max="255" value="128" orient="vertical">
+                        <label>T1: <span id="threshold-t1-value">128</span></label>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="threshold-t2-slider" min="0" max="255" value="128" orient="vertical">
+                        <label>T2: <span id="threshold-t2-value">128</span></label>
+                    </div>
+                </div>
+        
+        <div class="centered-label">Output Display</div>
+        <div id="geometry-properties-panel">
+            Displayed here.
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="centered-label">Shape Detection</div>
+        <label class="switch adaptive-toggle">
+            <input type="checkbox" id="shapeDetectionToggle">
+            <span class="Sslider"></span>
+        </label>
+</div>
+
+
+        <div class="image-container">
+    <div class="box-container">
+        <div class="box" id="original-box"></div>
+        <div class="label">Original</div>
+        <div class="upload-container">
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <button id="upload-btn">Select Image</button>
+        </div>
+    </div>
+    <div class="box-container">
+        <div class="box" id="converted-box">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="label">Converted</div>
+    </div>
+</div>
+
+<div class="bottom-container">
+    <div class="manual-matrix">
+        <div class="centered-label">Manual Matrix</div>
+        <div class="matrix-inputs">
+            <input type="text" class="matrix-input" id="matrix-0" value="0">
+            <input type="text" class="matrix-input" id="matrix-1" value="0">
+            <input type="text" class="matrix-input" id="matrix-2" value="0">
+            <input type="text" class="matrix-input" id="matrix-3" value="0">
+            <input type="text" class="matrix-input" id="matrix-4" value="0">
+            <input type="text" class="matrix-input" id="matrix-5" value="0">
+            <input type="text" class="matrix-input" id="matrix-6" value="0">
+            <input type="text" class="matrix-input" id="matrix-7" value="0">
+            <input type="text" class="matrix-input" id="matrix-8" value="0">
+        </div>
+    </div>
+
+    <div class="circular-slider">
+        <svg viewBox="0 0 100 100" class="slider-svg">
+            <circle cx="50" cy="50" r="40" class="slider-track"></circle>
+            <circle cx="50" cy="50" r="40" class="slider-progress"></circle>
+            <circle cx="50" cy="10" r="5" class="slider-handle" id="slider-handle"></circle>
+        </svg>
+        <div class="slider-value" id="slider-value">0°</div>
+    </div>
+
+    <div class="histogram-container">
+        <div class="centered-label">RGB Histogram</div>
+        <canvas id="histogramCanvas" width="300" height="150"></canvas>
+        <input type="file" id="imageInput" accept="image/*" />
+    </div>
+
+    <div class="binary-projection-container">
+        <div class="centered-label">Binary Image Projection</div>
+        <canvas id="projectionCanvas" width="300" height="150"></canvas>
+        <input type="file" id="imageInput" accept="image/*" />
+    </div>
+</div>
+
+
+    <script src="script.js"></script>
+
+
+</body>
+</html>

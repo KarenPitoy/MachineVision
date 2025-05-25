@@ -1,0 +1,69 @@
+<!-- sign_language.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://docs.opencv.org/3.4/opencv.js" onload="onOpenCVReady();" onerror="onOpenCVError();"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <meta charset="UTF-8">
+  <title>Sign Language App</title>
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Add FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <div class="tab-bar">
+    <button onclick="switchTab('signToText')">Sign-Audio/Text</button>
+   <!-- <button onclick="switchTab('textToSign')">Text/Audio-Sign</button>-->
+  </div>
+
+
+<div class="tab-content" id="signToText">
+  <h2>Sign to Audio/Text</h2>
+  <div class="gesture-container">
+  <div style="position: relative; width: 640px; height: 480px;">
+  <video id="gestureCamera" autoplay playsinline width="640" height="480" style="border: 1px solid #ccc; width: 100%; height: 100%;"></video>
+  <canvas id="handCanvas" width="640" height="480" style="position: absolute; left: 0; top: 0; pointer-events: none; width: 100%; height: 100%;"></canvas>
+</div>
+  </div>
+  <div class="gesture-controls">
+      <p id="recognizedGesture" class="recognizedGesture">Detected: None</p>
+      <button id="muteButton" class="mute-btn">
+        <i id="muteIcon" class="fa fa-volume-up"></i>
+      </button>
+    </div>
+</div>
+
+
+
+
+<!--<div class="tab-content" id="textToSign">
+  <h2>Text/Audio to Sign</h2>
+  <div class="tts-container">
+    
+    <div class="video-display" id="gestureVideoContainer">
+      
+      <video id="gesturePlayer" width="640" height="480" style="display: none;" autoplay muted></video>
+    </div>
+     <div id="videoFallback" class="fallback-message">
+    <p>No sign video available for the entered text.</p>
+  </div>
+   
+    <div class="text-controls">
+      <div class="input-group">
+        <input type="text" id="textInput" placeholder="Enter text or speak...">
+        <button id="micButton" class="mic-btn" title="Speak">
+          <i class="fa fa-microphone"></i>
+        </button>
+      </div>
+      <button id="playGesture">Play Gesture</button>
+    </div>
+  </div>
+</div> -->
+
+  <!-- Load OpenCV -->
+  <script src="scripts.js"></script>
+</body>
+</html>
