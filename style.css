@@ -986,3 +986,23 @@ resultCanvas.style.objectFit = "contain";
     margin-top: 10px;
     border: 1px solid #ccc;
 }
+#btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #efdecd; /* Almond */
+    color: #7a4b36; /* Bear brown */
+    border-radius: 8px;
+    transition: 0.3s;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(58, 42, 32, 0.2);
+}
+
+
+#btn:hover {
+    background: linear-gradient(135deg, #d1ae8a, #b8946d); /* Soft gradient */
+    box-shadow: 0 3px 6px rgba(58, 42, 32, 0.2); /* Subtle shadow */
+    filter: brightness(1.1); /* Slight brightness boost */
+    transition: background 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
